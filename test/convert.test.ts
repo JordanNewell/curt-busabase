@@ -73,6 +73,67 @@ describe("convertDir", () => {
 		expect(skipped).toBe(1);
 	});
 
+	it("converts a CR-less record from its head commit (payload title, fallback turn)", () => {
+		const dir = mkdtempSync(join(tmpdir(), "curt-busabase-"));
+		mkdirSync(join(dir, "records"), { recursive: true });
+		writeFileSync(
+			join(dir, "records", "rec_head.json"),
+			JSON.stringify({
+				id: "rec_head",
+				baseId: "b1",
+				status: "active",
+				createdAt: "2026-10-20T10:00:00.000Z",
+				updatedAt: "2026-10-20T11:00:00.000Z",
+				headCommit: {
+					id: "cmt_h",
+					message: "Morning lane: 5 curated links",
+					author: "andy",
+					createdAt: "2026-10-20T11:00:00.000Z",
+					payload: { post: "Top pick: consent-scoping", platform: "x" },
+				},
+			}),
+		);
+		const { items, converted } = convertDir(dir);
+		expect(converted).toBe(1);
+		const { conversation } = items[0];
+		expect(conversation.title).toBe("Top pick: consent-scoping");
+		expect(conversation.messages).toHaveLength(1);
+		expect(conversation.messages[0].role).toBe("user");
+		expect(conversation.messages[0].content).toContain("andy:");
+		expect(conversation.messages[0].content).toContain("Morning lane: 5 curated links");
+		expect(conversation.messages[0].content).toContain("post: Top pick: consent-scoping");
+	});
+
+	it("matches CRs linked via mergeSummary.recordIds (bulk create shape)", () => {
+		const dir = mkdtempSync(join(tmpdir(), "curt-busabase-"));
+		for (const sub of ["records", "change-requests"]) {
+			mkdirSync(join(dir, sub), { recursive: true });
+		}
+		writeFileSync(
+			join(dir, "records", "rec_b.json"),
+			JSON.stringify({ id: "rec_b", createdAt: "2026-10-20T10:00:00.000Z" }),
+		);
+		writeFileSync(
+			join(dir, "change-requests", "cr_b.json"),
+			JSON.stringify({
+				id: "cr_b",
+				status: "merged",
+				submittedByUser: { id: "usr_x", name: "Xavier" },
+				sourceAttribution: { agent: { id: "agt_a", name: "Aria" }, channel: "openapi" },
+				sourceMeta: { description: "Seeded rows" },
+				operations: [{ operation: "record_create" }],
+				mergeSummary: { recordIds: ["rec_b"] },
+				createdAt: "2026-10-20T10:05:00.000Z",
+			}),
+		);
+		const { items } = convertDir(dir);
+		expect(items).toHaveLength(1);
+		const { conversation, stats } = items[0];
+		expect(stats.changeRequests).toBe(1);
+		expect(conversation.messages[0].role).toBe("assistant");
+		expect(conversation.messages[0].model).toBe("Aria");
+	});
+
 	it("counts malformed files as unreadable, never fatal", () => {
 		const dir = mkdtempSync(join(tmpdir(), "curt-busabase-"));
 		mkdirSync(join(dir, "records"), { recursive: true });

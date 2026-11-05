@@ -113,24 +113,50 @@ interface RecordObj {
 	status: string | null;
 	createdAt: number | null;
 	updatedAt: number | null;
+	/** Field values live on headCommit.payload (records/get response). */
+	headPayload: Record<string, unknown> | null;
+	headMessage: string | null;
+	headAuthor: string | null;
+	headCreatedAt: number | null;
 }
 
 function readRecord(obj: Record<string, unknown>): RecordObj | null {
 	const id = asString(obj.id);
 	if (!id) return null;
+	const headCommit = asObject(obj.headCommit);
+	const headPayload = headCommit ? asObject(headCommit.payload) : null;
+	// Records carry no title field — the primary field value IS the title.
+	// First string value in the payload wins (field order is not exposed here).
+	let title: string | null = null;
+	if (headPayload) {
+		for (const v of Object.values(headPayload)) {
+			title = asString(v);
+			if (title) break;
+		}
+	}
+	const headAuthorUser = headCommit ? asObject(headCommit.authorUser) : null;
 	return {
 		id,
 		baseId: asString(obj.baseId),
-		title: asString(obj.title) ?? asString(obj.name),
+		title: title ?? asString(obj.title) ?? asString(obj.name),
 		status: asString(obj.status),
 		createdAt: toEpochMs(obj.createdAt),
 		updatedAt: toEpochMs(obj.updatedAt),
+		headPayload,
+		headMessage: headCommit ? asString(headCommit.message) : null,
+		headAuthor: headAuthorUser
+			? asString(headAuthorUser.name) ?? asString(headAuthorUser.id)
+			: headCommit
+				? asString(headCommit.author)
+				: null,
+		headCreatedAt: headCommit ? toEpochMs(headCommit.createdAt) : null,
 	};
 }
 
 interface ChangeRequestObj {
 	id: string;
-	recordId: string | null;
+	/** Every record this CR touches: explicit ids + mergeSummary.recordIds. */
+	recordIds: string[];
 	status: string | null;
 	submittedByUser: string | null;
 	/** Agent client attribution — presence marks the submitter as an agent. */
@@ -156,9 +182,15 @@ function readChangeRequest(obj: Record<string, unknown>): ChangeRequestObj | nul
 		.map((o) => asString(o.operation))
 		.filter((k): k is string => k !== null);
 	const sourceMeta = asObject(obj.sourceMeta);
+	const mergeSummary = asObject(obj.mergeSummary);
+	const mergedRecordIds = Array.isArray(mergeSummary?.recordIds)
+		? mergeSummary.recordIds.filter((v): v is string => typeof v === "string")
+		: [];
+	const explicitRecordId = asString(obj.recordId) ?? asString(obj.targetRecordId);
+	const recordIds = [...new Set([explicitRecordId, ...mergedRecordIds].filter((v): v is string => v !== null))];
 	return {
 		id,
-		recordId: asString(obj.recordId) ?? asString(obj.targetRecordId),
+		recordIds,
 		status: asString(obj.status),
 		submittedByUser: submittedByUser ? (asString(submittedByUser.name) ?? asString(submittedByUser.id)) : null,
 		agentName: agent ? asString(agent.name) : null,
@@ -295,8 +327,8 @@ function convertRecord(
 	totals: BusabaseStats,
 ): ConvertResult | null {
 	// CRs attach by explicit recordId; reviews/comments attach through their CR.
-	const crsForRecord = changeRequests.filter(
-		(cr) => cr.recordId === record.id,
+	const crsForRecord = changeRequests.filter((cr) =>
+		cr.recordIds.includes(record.id),
 	);
 	const crIds = new Set(crsForRecord.map((cr) => cr.id));
 	const reviewsForRecord = reviews.filter(
@@ -375,8 +407,26 @@ function convertRecord(
 		});
 	}
 
-	// A record with no trail has no conversation to preserve.
-	if (turns.length === 0) return null;
+	// A record with no trail has no conversation to preserve — unless its
+	// head commit carries a message (pulls that omit the CR list still
+	// convert the final state as one turn).
+	if (turns.length === 0) {
+		if (!record.headMessage && !record.headPayload) return null;
+		const parts: string[] = [];
+		if (record.headAuthor) parts.push(`${record.headAuthor}:`);
+		if (record.headMessage) parts.push(record.headMessage);
+		if (record.headPayload) {
+			const values = Object.entries(record.headPayload)
+				.map(([k, v]) => (typeof v === "string" && v ? `${k}: ${v}` : null))
+				.filter((v): v is string => v !== null);
+			if (values.length > 0) parts.push(values.join(" | "));
+		}
+		turns.push({
+			ts: record.headCreatedAt ?? record.createdAt ?? 0,
+			role: "user",
+			content: parts.join(" "),
+		});
+	}
 
 	turns.sort((a, b) => a.ts - b.ts);
 	const messages: CurtMessage[] = turns.map((t, i) => ({
