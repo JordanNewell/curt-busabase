@@ -1,0 +1,10 @@
+{
+	"id": "rec_001",
+	"baseId": "base_blog",
+	"title": "Q4 launch post",
+	"status": "active",
+	"createdAt": "2026-10-20T10:00:00.000Z",
+	"updatedAt": "2026-10-21T09:30:00.000Z",
+	"createdBy": "usr_andy",
+	"headCommitId": "cmt_003"
+}

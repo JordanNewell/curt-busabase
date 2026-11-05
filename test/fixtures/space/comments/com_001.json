@@ -1,0 +1,13 @@
+{
+	"id": "com_001",
+	"subjectType": "change_request",
+	"subjectId": "cr_001",
+	"recordId": "rec_001",
+	"changeRequestId": "cr_001",
+	"authorId": "usr_sarah",
+	"author": { "id": "usr_sarah", "name": "Sarah", "role": "member" },
+	"body": "Tighten the lede — the hook is buried in paragraph two.",
+	"mentions": [],
+	"createdAt": "2026-10-20T11:00:00.000Z",
+	"updatedAt": "2026-10-20T11:00:00.000Z"
+}

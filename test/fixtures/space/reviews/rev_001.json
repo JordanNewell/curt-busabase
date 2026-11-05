@@ -1,0 +1,10 @@
+{
+	"id": "rev_001",
+	"changeRequestId": "cr_001",
+	"reviewerId": "usr_sarah",
+	"reviewer": { "id": "usr_sarah", "name": "Sarah", "role": "member" },
+	"verdict": "approve",
+	"reason": "Ship it",
+	"visibleOperationHeads": {},
+	"createdAt": "2026-10-20T12:00:00.000Z"
+}

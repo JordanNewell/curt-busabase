@@ -1,0 +1,22 @@
+{
+	"id": "cr_002",
+	"baseId": "base_blog",
+	"targetType": "base",
+	"status": "approved",
+	"recordId": "rec_001",
+	"submittedByUser": null,
+	"sourceAttribution": {
+		"displayName": "Andy",
+		"channel": "mcp",
+		"agent": { "id": "agt_andy", "name": "Andy" }
+	},
+	"sourceMeta": {
+		"description": "Lede tightened per review"
+	},
+	"operations": [
+		{ "id": "op_002", "changeRequestId": "cr_002", "operation": "record_update", "status": "merged" }
+	],
+	"createdAt": "2026-10-21T09:00:00.000Z",
+	"updatedAt": "2026-10-21T09:30:00.000Z",
+	"reviewedAt": "2026-10-21T09:30:00.000Z"
+}

@@ -1,0 +1,22 @@
+{
+	"id": "cr_001",
+	"baseId": "base_blog",
+	"targetType": "base",
+	"status": "merged",
+	"recordId": "rec_001",
+	"submittedByUser": null,
+	"sourceAttribution": {
+		"displayName": "Andy",
+		"channel": "openapi",
+		"agent": { "id": "agt_andy", "name": "Andy" }
+	},
+	"sourceMeta": {
+		"description": "Drafted the Q4 launch post from the launch-notes doc"
+	},
+	"operations": [
+		{ "id": "op_001", "changeRequestId": "cr_001", "operation": "record_create", "status": "merged" }
+	],
+	"createdAt": "2026-10-20T10:05:00.000Z",
+	"updatedAt": "2026-10-20T12:00:00.000Z",
+	"mergedAt": "2026-10-20T12:00:00.000Z"
+}

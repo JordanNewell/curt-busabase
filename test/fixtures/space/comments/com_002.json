@@ -1,0 +1,13 @@
+{
+	"id": "com_002",
+	"subjectType": "change_request",
+	"subjectId": "cr_002",
+	"recordId": "rec_001",
+	"changeRequestId": "cr_002",
+	"authorId": "usr_andy",
+	"author": { "id": "usr_andy", "name": "Andy", "role": "agent" },
+	"body": "Lede tightened in cr_002; hook now leads.",
+	"mentions": [],
+	"createdAt": "2026-10-21T09:05:00.000Z",
+	"updatedAt": "2026-10-21T09:05:00.000Z"
+}
