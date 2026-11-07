@@ -18,7 +18,8 @@
 	"scripts": {
 		"build": "tsc",
 		"test": "vitest run",
-		"prepack": "npm run build"
+		"prepack": "npm run build",
+		"conformance": "node scripts/conformance-run.mjs"
 	},
 	"dependencies": {
 		"curt-format": "^1.2.0"

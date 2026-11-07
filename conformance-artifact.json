@@ -1,0 +1,24 @@
+{
+	"generator": "curt-busabase@1.0.1 conformance-run",
+	"date": "2026-11-07",
+	"vectorsSource": "https://github.com/JordanNewell/dot_curt/tree/main/conformance/vectors",
+	"l1": {
+		"coreVectors": 13,
+		"passed": 13,
+		"failed": 0,
+		"failures": []
+	},
+	"l2": {
+		"namedVectors": 7,
+		"passed": 7,
+		"failed": 0,
+		"failures": []
+	},
+	"artifact": {
+		"inputs": 3,
+		"outputs": 3,
+		"reParsed": 3,
+		"reParseFailures": 0,
+		"roundTripStable": 3
+	}
+}
