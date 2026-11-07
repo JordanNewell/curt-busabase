@@ -64,6 +64,14 @@ unrecognized fields are skipped and counted in the run summary, never fatal.
   of scope for v1.
 - Attachments are referenced by the trail but their bytes are not embedded.
 
+## Contributing
+
+Bug reports and pull requests welcome in
+[Issues](https://github.com/JordanNewell/curt-busabase/issues). For real-space
+trails that convert badly, attach the JSON slice (redact anything sensitive)
+— tolerant readers improve by what they fail on. Security reports: see
+[SECURITY.md](SECURITY.md).
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
