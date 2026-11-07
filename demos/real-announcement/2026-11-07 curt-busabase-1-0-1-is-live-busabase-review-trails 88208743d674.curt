@@ -1,0 +1,28 @@
+{
+	"curt": "curtis-conversation",
+	"version": 1,
+	"conversation": {
+		"id": "busabase_record_88208743d674",
+		"title": "curt-busabase 1.0.1 is live: Busabase review trails now export as portable .curt conversations. An agent workspace is a schema you migrate out of later; a format is the exit. npm: curt-busabase — docs: docs.dotcurt.org/docs/ecosystem/curt-busabase",
+		"createdAt": 1794033796239,
+		"updatedAt": 1794033796239,
+		"messages": [
+			{
+				"id": "busabase_record_88208743d674_000",
+				"role": "user",
+				"content": "andy submitted a change request (merged (record_create))",
+				"timestamp": 1794033796197
+			}
+		],
+		"provider": "busabase",
+		"busabase": {
+			"recordId": "recmw61eglw277c2zd",
+			"baseId": "bsemw3czhshd13r24p",
+			"recordStatus": "active",
+			"changeRequests": 1,
+			"reviews": 0,
+			"comments": 0
+		}
+	},
+	"generator": "curt-busabase@1.0.0"
+}

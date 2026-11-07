@@ -1,0 +1,9 @@
+# Path-scoped OPSEC allowlist (gitignore-style, committed + reviewable).
+# Secret scans still run on these files; only the identifier-pattern scan is
+# waived for the paths below.
+#
+# demos/real-announcement/ — the converter's own ship announcement, produced
+# BY the pipeline it documents (agent lane -> Busabase -> curt-busabase).
+# The agent submitter name appears in the converter's human-role message
+# text by design; the file is the demo, not an operational leak.
+demos/real-announcement/
